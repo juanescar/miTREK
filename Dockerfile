@@ -20,6 +20,7 @@ RUN apk add --no-cache tzdata dumb-init su-exec python3 make g++ && \
     rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 COPY server/ ./
+COPY seed-data ./seed-data
 COPY --from=client-builder /app/client/dist ./public
 COPY --from=client-builder /app/client/public/fonts ./public/fonts
 
@@ -41,4 +42,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/health || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["sh", "-c", "chown -R node:node /app/data /app/uploads 2>/dev/null || true; exec su-exec node node --import tsx src/index.ts"]
+CMD ["sh", "-c", "if [ ! -f /app/data/travel.db ]; then cp /app/seed-data/travel.db /app/data/travel.db; fi; chown -R node:node /app/data /app/uploads 2>/dev/null || true; exec su-exec node node --import tsx src/index.ts"]
