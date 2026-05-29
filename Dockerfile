@@ -23,6 +23,8 @@ COPY server/ ./
 COPY --from=client-builder /app/client/dist ./public
 COPY --from=client-builder /app/client/public/fonts ./public/fonts
 
+COPY seed-data/travel.db /app/data/travel.db
+
 RUN rm -f package-lock.json && \
     mkdir -p /app/data/logs /app/uploads/files /app/uploads/covers /app/uploads/avatars /app/uploads/photos && \
     mkdir -p /app/server && ln -s /app/uploads /app/server/uploads && ln -s /app/data /app/server/data && \
